@@ -3,6 +3,7 @@ import { Avatar, Flex, Text, Image , Box, Divider} from "@chakra-ui/react";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "../components/Actions";
 import { useState } from "react";
+import Comment from "../components/Comment";
 const PostPage = () => {
   const [liked,setLiked]=useState(false);
   return (
@@ -44,6 +45,7 @@ const PostPage = () => {
         </Text>
       </Flex>
       <Divider my={4}/>
+      <Comment/>
     </>
   );
 };
