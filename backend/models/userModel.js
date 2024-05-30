@@ -31,7 +31,7 @@ const userSchema=mongoose.Schema(
             default:[],
         },
         following:{
-            tyoe:[String],
+            type:[String],
             default:[],
         },
         bio:{
