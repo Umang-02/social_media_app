@@ -1,10 +1,11 @@
 import express from 'express';
-import {signUpUser,loginUser,logoutUser,followUnfollowUser,updateUser} from '../controllers/userController.js';
+import {signUpUser,loginUser,logoutUser,followUnfollowUser,updateUser, getUserProfile} from '../controllers/userController.js';
 
 import protectRoute from '../middlewares/protectRoute.js';
 
 const userRoutes=express.Router();
 
+userRoutes.get("/profile/:username",getUserProfile);
 userRoutes.post("/signup",signUpUser);
 userRoutes.post("/login",loginUser);
 userRoutes.post("/logout",logoutUser);
