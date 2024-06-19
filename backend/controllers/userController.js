@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/helpers/generateTokenAndSetCookie.js";
 import jwt from 'jsonwebtoken';
+import {v2 as cloudinary} from "cloudinary";
 
 const signUpUser=async(req,res)=>{
     try {
@@ -115,7 +116,8 @@ const followUnfollowUser=async(req,res)=>{
 };
 
 const updateUser=async(req,res)=>{
-    const {name,username,password,email,profilepic,bio}=req.body;
+    const {name,username,password,email,bio}=req.body;
+    let {profilepic}=req,body;
     const userId=req.user._id;
     try {
         let user=await User.findById(userId);
@@ -128,6 +130,15 @@ const updateUser=async(req,res)=>{
             user.password=hashedPassword;
         }
 
+        if(profilePic)
+        {
+            if(user.profilePic)
+            {
+                await cloudinary.uploader.destroy(user.profilePic.split("/").pop().split("."[0]));
+            }
+            const uploadResponse=await cloudinary.uploader.upload(profilePic)
+            profilePic=uploadResponse.secure_url;
+        }
         if(userId!==req.params.id)
         {
             res.status(500).json({error:"You cannot update any other profile from thsi profile!"});
@@ -140,6 +151,8 @@ const updateUser=async(req,res)=>{
         user.bio=bio||user.bio;
 
         user=await user.save();
+
+        user.password=null; //we dont want the password to appear in our res, hence we set it to null after the user data after updating is saved.
 
         res.status(200).json({message:"User updated successfully."},user);
 

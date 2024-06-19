@@ -14,6 +14,7 @@ const usePreviewImage = () => {
             //File reader can only view the chosen files through either drap and drop or a file input only.
 
             reader.onloadend=()=>{
+                //console.log(reader.result);
                 setImgUrl(reader.result);
             }
 
@@ -25,6 +26,7 @@ const usePreviewImage = () => {
             setImgUrl(null);
         }
         console.log(file);
+        console.log(imgUrl);
     };
   return {handleImageChange,imgUrl};
 }

@@ -16,10 +16,35 @@ import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useRef } from "react";
 import usePreviewImage from "../hooks/usePreviewImage";
+import useShowToast from "../hooks/useShowToast";
 
 export default function UpdateProfilePage(){
     const fileRef=useRef(null);
     const {handleImageChange,imgUrl}=usePreviewImage();
+    const showToast=useShowToast();
+    const handleSubmit=async(e)=>{
+        e.preventDefault();
+        try {
+            const res=await fetch(`/api/users/update/${user._id}`,{
+                method:"PUT",
+                headers:{
+                    "Content-Type":"application/json",
+                },
+                body:JSON.stringify({...inputs,profilePic:imgUrl})
+            })
+            const data=await res.json();
+            if(data.error)
+            {
+                showToast("Error",data.error,"error");
+                return;
+            }
+            showToast("success","Profile Updated Successfully","success");
+            setUser(data);
+            localStorage.setItem("users-signedup",JSON.stringify(data));
+        } catch (error) {
+            showToast('Error',error,"error");
+        }
+    }
     const [user,setUser]=useRecoilState(userAtom);
     const [inputs,setInputs]=useState({
         name:user.name,
@@ -29,7 +54,7 @@ export default function UpdateProfilePage(){
         password:"", 
     });
 	return (
-		// <form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit}>
 			<Flex align={"center"} justify={"center"} my={6}>
 				<Stack
 					spacing={4}
@@ -131,6 +156,6 @@ export default function UpdateProfilePage(){
 					</Stack>
 				</Stack>
 			</Flex>
-		// </form>
+		</form>
 	);
 }
