@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage"
 import { Navigate } from "react-router-dom"
 import LogoutButton from "./components/LogoutButton";
 import UpdateProfilePage from "./pages/UpdateProfilePage"
+import CreatePost from "./components/CreatePost";
 function App() {
   const user=useRecoilValue(userAtom);
   console.log(user);
@@ -26,6 +27,7 @@ function App() {
       </Routes>
 
       {user && <LogoutButton/>}
+      {user && <CreatePost/>}
     </Container>
   )
 }

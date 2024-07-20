@@ -22,7 +22,16 @@ export default function UpdateProfilePage(){
     const fileRef=useRef(null);
     const {handleImageChange,imgUrl}=usePreviewImage();
     const showToast=useShowToast();
-    const handleSubmit=async(e)=>{
+    const [user,setUser]=useRecoilState(userAtom);
+    const [inputs,setInputs]=useState({
+        name:user.name,
+        username:user.username,
+        email:user.email,
+        bio:user.bio,
+        password:"", 
+    });
+	console.log(user);
+	const handleSubmit=async(e)=>{
         e.preventDefault();
         try {
             const res=await fetch(`/api/users/update/${user._id}`,{
@@ -45,14 +54,6 @@ export default function UpdateProfilePage(){
             showToast('Error',error,"error");
         }
     }
-    const [user,setUser]=useRecoilState(userAtom);
-    const [inputs,setInputs]=useState({
-        name:user.name,
-        username:user.username,
-        email:user.email,
-        bio:user.bio,
-        password:"", 
-    });
 	return (
 		<form onSubmit={handleSubmit}>
 			<Flex align={"center"} justify={"center"} my={6}>

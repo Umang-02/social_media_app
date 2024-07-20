@@ -5,7 +5,7 @@ import protectRoute from '../middlewares/protectRoute.js';
 
 const userRoutes=express.Router();
 
-userRoutes.get("/profile/:username",getUserProfile);
+userRoutes.get("/profile/:query",getUserProfile);
 userRoutes.post("/signup",signUpUser);
 userRoutes.post("/login",loginUser);
 userRoutes.post("/logout",logoutUser);

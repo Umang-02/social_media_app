@@ -1,9 +1,10 @@
 import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
-
+import {v2 as cloudinary} from "cloudinary";
 const createPost = async(req,res)=>{
     try {
-        const {postedBy,text,img}=req.body;
+        const {postedBy,text}=req.body;
+        let {img}=req.body;
         if(!postedBy || !text)
         {
             return res.staus(400).json({message:"PostedBy and text fields are required"});
@@ -21,7 +22,12 @@ const createPost = async(req,res)=>{
 
         if(text.length>500)
             return res.status(400).json({message:"Text must be less than 500 characters"});
-
+           
+        if(img)
+        {
+            const uploadedResponse=await cloudinary.uploader.upload(img);
+            img=uploadedResponse.secure_url;
+        }
         const newPost=new Post({postedBy,text,img});
         await newPost.save();
 
@@ -152,7 +158,7 @@ const getFeed=async(req,res)=>{
 
         const feedPosts=await Post.find({postedBy:{$in:following}}).sort({createdAt:-1});
 
-        res.status(200).json({feedPosts});
+        res.status(200).json(feedPosts);
         
     } catch (error) {
         res.status(500).json({message:error.message});
@@ -160,4 +166,23 @@ const getFeed=async(req,res)=>{
     }
 };
 
-export {createPost, getPost , deletePost, likeUnlikePost, replyToPost, getFeed};
+const getUserPosts=async(req,res)=>{
+    const {username}=req.params;
+    try {
+        const user=await User.findOne({username});
+        if(!user)
+        {
+            return res.status(400).json({error:"User not found"});
+        }
+
+        const posts=await Post.find({postedBy:user._id}).sort({createdAt:-1});
+
+        res.status(200).json(posts);
+
+    } catch (error) {
+        return res.status(500).json({message:error.message});
+        console.log("Error in getUserPosts function in post Controller:",error.message); 
+    }
+}
+
+export {createPost, getPost , deletePost, likeUnlikePost, replyToPost, getFeed, getUserPosts};
