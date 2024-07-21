@@ -116,8 +116,7 @@ const Post = ({ post, postedBy }) => {
           )}
           <Flex gap={3} my={1}>
             <Actions post={post} />
-          </Flex>
-          
+          </Flex>  
         </Flex>
       </Flex>
     </Link>
